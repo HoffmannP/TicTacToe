@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', main)
 
 function main () {
+  const DEV = true
   const state = {
     game: 'waiting',
     bord: Array(9).fill(''),
-    websocket: new window.WebSocket('ws://localhost:5432'),
+    websocket: new window.WebSocket(DEV ? 'ws://localhost:5432' : 'wss://b-ranger.de/tictactoe_ws'),
     key: null,
     cells: [...document.querySelectorAll('.grid > div')]
   }
@@ -33,7 +34,6 @@ function receive (MessageEvent) {
   console.log(data.action)
   switch (data.action) {
     case 'draw':
-      document.body.removeEventListener('click', share)
       this.bord[data.index] = data.player
       document.querySelectorAll('.grid > div').forEach(
         (cell, index) => (cell.dataset.player = this.bord[index]))
@@ -49,16 +49,21 @@ function receive (MessageEvent) {
         (cell, index) => (cell.dataset.player = this.bord[index]))
       break
     case 'turn':
-      document.body.removeEventListener('click', share)
+      document.body.classList.remove('wait')
       document.querySelector('.grid').addEventListener(
         'click',
         clickEvent => this.websocket.send(JSON.stringify(
-          { action: 'draw', index: this.cells.indexOf(clickEvent.target) })),
+          { action: 'draw', index: this.cells.indexOf(clickEvent.target) })) ||
+	  document.body.classList.add('wait'),
         { once: true })
       break
     case 'invite':
       window.history.replaceState(null, '', `?${data.key}`)
       document.body.addEventListener('click', share)
+      break
+    case 'start':
+      document.body.removeEventListener('click', share)
+      document.body.classList.add('wait')
       break
   }
 }

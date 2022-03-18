@@ -7,6 +7,9 @@ body {
     font-size: 33.33vmin;
     font-family: sans-serif;
 }
+body.wait {
+    background-color: grey;
+}
 
 .grid {
     width: 90vmin;

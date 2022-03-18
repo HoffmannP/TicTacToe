@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.9
 
 import asyncio
 import json
@@ -15,6 +15,7 @@ def broadcast(players, action, **data):
             'action': action, **data}))
 
 async def play(*players):
+    broadcast(players, 'start')
     print('Game starts')
     current = random.randint(0, 1)
     bord = list(None for _ in range(9))
