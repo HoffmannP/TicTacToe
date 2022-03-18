@@ -1,0 +1,37 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 33.33vmin;
+    font-family: sans-serif;
+}
+
+.grid {
+    width: 90vmin;
+    height: 90vmin;
+    display: grid;
+    grid-template: repeat(3, 33.33%) / repeat(3, 33.33%);
+    gap: 0;
+    border: 1px solid black;
+    border-width: 1px 0 0 1px;
+}
+
+.grid > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-width: 0 1px 1px 0;
+}
+
+.grid > div[data-player="0"]::before {
+    color: red;
+    content: 'X'
+}
+
+.grid > div[data-player="1"]::before {
+    color: green;
+    content: 'O'
+}
