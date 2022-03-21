@@ -5,7 +5,7 @@ function main () {
   const state = {
     connection: 'offline',
     myturn: false,
-    notify: true,
+    notify: false,
     bord: Array(9).fill(''),
     websocket: new window.WebSocket(DEV ? 'ws://localhost:5432' : 'wss://b-ranger.de/tictactoe_ws'),
     key: null,
@@ -22,9 +22,9 @@ function main () {
 
   document.querySelectorAll('.action-connection').forEach(b => b.addEventListener('click', connect.bind(state)))
   connectionState.call(this, 'offline')
+  document.querySelectorAll('.action-notify').forEach(c => c.addEventListener('click', swichNotifyState.bind(state)))
   document.querySelector('.grid').addEventListener('click', play.bind(state))
 
-  swichNotifyState.call(state)
   drawBord.call(state)
 }
 
@@ -33,25 +33,26 @@ function send (action, data = {}) {
 }
 
 function swichNotifyState () {
-  switch (!this.notify) {
-    case true:
+  switch (this.notify) {
+    case false:
       if (window.Notification.permission !== 'granted') {
         window.Notification.requestPermission().then(result => {
           if (result === 'granted') {
             this.notify = true
-            document.querySelectorAll('.action-notify img').forEach(setIcon('bell'))
           }
         })
       } else {
         this.notify = true
-        document.querySelectorAll('.action-notify img').forEach(setIcon('bell'))
       }
       break
-    case false:
-      document.querySelectorAll('.action-notify img').forEach(setIcon('bell-off'))
+    case true:
       this.notify = false
   }
-  document.querySelectorAll('.action-notify').forEach(c => c.addEventListener('click', swichNotifyState.bind(this)))
+  if (this.notify) {
+    document.querySelectorAll('.action-notify img').forEach(setIcon('bell'))
+  } else {
+    document.querySelectorAll('.action-notify img').forEach(setIcon('bell-off'))
+  }
 }
 
 function connectionState (state) {
