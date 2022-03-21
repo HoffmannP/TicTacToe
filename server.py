@@ -5,8 +5,8 @@ import json
 import random
 import secrets
 import typing
-import websockets
-import websockets.server
+import websockets # type: ignore
+import websockets.server  # type: ignore
 
 GAME: typing.Dict[str, websockets.server.WebSocketServerProtocol] = {}
 
@@ -20,33 +20,52 @@ async def play(*players):
     current = random.randint(0, 1)
     bord = list(None for _ in range(9))
     while True:
-        await players[current].send(json.dumps({ 'action': 'turn'}))
-        print(f'Player {current} draws')
-        message = await players[current].recv()
-        try:
-            data = json.loads(message)
-        except ValueError:
-            continue
+        while True:
+            await players[current].send(json.dumps({ 'action': 'turn'}))
+            print(f'Player {current} draws')
+            message = await players[current].recv()
+            try:
+                data = json.loads(message)
+            except ValueError:
+                continue
 
-        assert data['action'] == 'draw'
-        assert 'index' in data
+            assert data['action'] == 'draw'
+            assert 'index' in data
 
-        if bord[data['index']] is not None:
-            continue
-        bord[data['index']] = current
-        print(f'Player {current} sets on index {data["index"]}')
-        broadcast(players, 'draw', index=data['index'], player=current)
-        if checkWin(bord, current):
-            broadcast(players, 'win', player=current)
-            print(f'Player {current} hat gewonnen')
-            players[0].close()
-            players[1].close()
-            return
-        if all([c is not None for c in bord]):
-            print('Neustart wegen unentschieden')
-            broadcast(players, 'restart')
-            bord = list(None for _ in range(9))
+            if bord[data['index']] is not None:
+                continue
+            bord[data['index']] = current
+            print(f'Player {current} sets on index {data["index"]}')
+            broadcast(players, 'draw', index=data['index'], player=current)
+            if checkWin(bord, current):
+                print(f'Player {current} hat gewonnen')
+                broadcast(players, 'win', player=current)
+                break
+            if all([c is not None for c in bord]):
+                print('Neustart wegen unentschieden')
+                broadcast(players, 'win', player='')
+                break
+            current = current ^ 1
+            print('Niemand hat gewonnen')
+
+        print('Waiting for restart')
+        while True:
+            done, pending = await asyncio.wait([p.recv() for p in players], return_when=asyncio.FIRST_COMPLETED)
+            [p.cancel() for p in pending]
+            await asyncio.wait(pending)
+            message = await done.pop()
+            try:
+                data = json.loads(message)
+            except ValueError:
+                continue
+            if data['action'] == 'restart':
+                break
+        print('Restarting')
+        bord = list(None for _ in range(9))
+
+        broadcast(players, 'restart')
         current = current ^ 1
+
 
 def checkWin(bord, player):
     print(bord, player)
@@ -93,6 +112,7 @@ async def handler(websocket):
     await websocket.send(json.dumps({
         'action': 'invite',
         'key': key}))
+
     await websocket.wait_closed()
     del GAME[key]
     print('Player 0 left the game')

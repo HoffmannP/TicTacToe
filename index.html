@@ -1,15 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>TicTacToe</title>
-        <link href="style.css" rel="stylesheet">
-        <script type="module" src="script.js"></script>
-    </head>
-    <body>
+<head>
+    <meta charset="utf-8">
+    <title>TicTacToe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="uikit/css/uikit.css" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="uikit/js/uikit.js"></script>
+    <script type="module" src="script.js"></script>
+</head>
+<body>
+    <div uk-sticky>
+        <nav class="uk-navbar-container" uk-navbar>
+
+            <div class="uk-navbar-left">
+                <a href="//b-ranger.de" class="uk-navbar-item uk-logo" uk-icon>
+                    <img src="images/tictactoe.png" width="40" height="40">
+                </a>
+                <button class="uk-navbar-item uk-button uk-button-default action-connection">
+                    <img src="images/feather-icons/cloud-off.svg" width="26" height="26">
+                </button>
+                <div class="uk-navbar-item">
+                    <img class="state-turn" src="images/feather-icons/clock.svg" width="26" height="26">
+                </div>
+            </div>
+            <div class="uk-navbar-right">
+                <button class="uk-navbar-item uk-button uk-button-default action-notify">
+                    <img src="images/feather-icons/bell.svg" width="26" height="26">
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <main>
         <div class="grid">
             <div></div><div></div><div></div>
             <div></div><div></div><div></div>
             <div></div><div></div><div></div>
         </div>
-    </body>
+    </main>
+</body>
 </html>

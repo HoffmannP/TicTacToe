@@ -1,17 +1,21 @@
 body {
-    margin: 0;
+    height: 100vh;
+}
+
+img.grey {
+    filter: invert(50%);
+}
+
+main {
+    height: calc(100vh - 80px);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    font-size: 33.33vmin;
-    font-family: sans-serif;
-}
-body.wait {
-    background-color: grey;
 }
 
 .grid {
+    font-size: 33.33vmin;
+    font-family: sans-serif;
     width: 90vmin;
     height: 90vmin;
     display: grid;
