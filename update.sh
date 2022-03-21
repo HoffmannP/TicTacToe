@@ -14,7 +14,7 @@ mkdir build
 ) | uglifyjs --mangle --toplevel --compress --source-map --output build/script.js
 sed '/uikit/d;s%/feather-icons%%' index.html | minify --html > build/index.html
 
-ssh uber mkdir -p			html/tictactoe/images
+ssh uber -x mkdir -p			html/tictactoe/images
 scp build/*					uber:html/tictactoe/
 scp images/tictactoe.png	uber:html/tictactoe/images/
 icons=$(
@@ -27,5 +27,5 @@ scp $icons uber:html/tictactoe/images/
 scp server.py				uber:bin/tictactoe.py
 scp supervisor.ini			uber:etc/services.d/tictactoe.ini
 
-ssh uber supervisorctl restart tictactoe
-ssh uber supervisorctl status tictactoe
+ssh uber -x supervisorctl restart tictactoe
+ssh uber -x supervisorctl status tictactoe
