@@ -15,14 +15,15 @@ def broadcast(players, action, **data):
             'action': action, **data}))
 
 async def play(*players):
-    broadcast(players, 'start')
+    await players[0].send(json.dumps({'action': 'start', 'player': 0}))
+    await players[1].send(json.dumps({'action': 'start', 'player': 1}))
     print('Game starts')
     current = random.randint(0, 1)
     bord = list(None for _ in range(9))
     while True:
         while True:
             await players[current].send(json.dumps({ 'action': 'turn'}))
-            print(f'Player {current} draws')
+            print(f'Player {current}\'s turn')
             message = await players[current].recv()
             try:
                 data = json.loads(message)
@@ -38,15 +39,14 @@ async def play(*players):
             print(f'Player {current} sets on index {data["index"]}')
             broadcast(players, 'draw', index=data['index'], player=current)
             if checkWin(bord, current):
-                print(f'Player {current} hat gewonnen')
+                print(f'Player {current} wins')
                 broadcast(players, 'win', player=current)
                 break
             if all([c is not None for c in bord]):
-                print('Neustart wegen unentschieden')
+                print('Nobody wins, Tie')
                 broadcast(players, 'win', player='')
                 break
             current = current ^ 1
-            print('Niemand hat gewonnen')
 
         print('Waiting for restart')
         while True:
@@ -68,7 +68,6 @@ async def play(*players):
 
 
 def checkWin(bord, player):
-    print(bord, player)
     if bord[0] == bord[1] == bord[2] == player:
         return True
     if bord[3] == bord[4] == bord[5] == player:

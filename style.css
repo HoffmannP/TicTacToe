@@ -2,8 +2,8 @@ body {
     height: 100vh;
 }
 
-img.grey {
-    filter: invert(50%);
+img[uk-svg] + svg {
+    fill: none;
 }
 
 main {
@@ -33,12 +33,12 @@ main {
     border-width: 0 1px 1px 0;
 }
 
-.grid > div[data-player="0"]::before {
-    color: red;
-    content: 'X'
+div[data-player="0"]::before {
+    color: #1858e7;
+    content: 'X';
 }
 
-.grid > div[data-player="1"]::before {
-    color: green;
-    content: 'O'
+div[data-player="1"]::before {
+    color: #e7a718;
+    content: 'O';
 }

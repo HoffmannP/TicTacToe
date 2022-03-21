@@ -58,17 +58,29 @@ function connectionState (state) {
   this.connection = state
   switch (state) {
     case 'offline':
+      document.querySelectorAll('.action-connection').forEach(setClass('uk-button-default', 'uk-button-primary'))
       document.querySelectorAll('.action-connection img').forEach(setIcon('cloud-off'))
       break
     case 'sharing':
+      document.querySelectorAll('.action-connection').forEach(setClass('uk-button-primary', 'uk-button-default'))
       document.querySelectorAll('.action-connection img').forEach(setIcon('share-2'))
       break
     case 'connected':
+      document.querySelectorAll('.action-connection').forEach(setClass('uk-button-default', 'uk-button-primary'))
       document.querySelectorAll('.action-connection img').forEach(setIcon('cloud-lightning'))
       break
     case 'done':
+      document.querySelectorAll('.action-connection').forEach(setClass('uk-button-primary', 'uk-button-default'))
       document.querySelectorAll('.action-connection img').forEach(setIcon('refresh-ccw'))
       break
+  }
+}
+
+function setClass (add, remove) {
+  return function (element) {
+    element.classList.add(add)
+    element.classList.remove(remove)
+    return element
   }
 }
 
@@ -102,13 +114,15 @@ function myturnState (state) {
   this.myturn = state
   switch (state) {
     case true:
-      if (this.notify) {
+      if (document.visibilityState !== 'visible' && this.notify) {
         // eslint-disable-next-line no-new
         new window.Notification("It's your turn", { tag: this.key })
       }
+      document.querySelectorAll('.state-turn').forEach(setClass('uk-text-primary', 'uk-text-muted'))
       document.querySelectorAll('.state-turn').forEach(setIcon('crosshair'))
       break
     case false:
+      document.querySelectorAll('.state-turn').forEach(setClass('uk-text-muted', 'uk-text-primary'))
       document.querySelectorAll('.state-turn').forEach(setIcon('clock'))
       break
   }
@@ -119,7 +133,6 @@ function play (clickEvent) {
     return
   }
   const cellIndex = this.cells.indexOf(clickEvent.target)
-  console.log(this.bord, cellIndex)
   if (this.bord[cellIndex] !== '') {
     return
   }
@@ -163,6 +176,7 @@ function receive (MessageEvent) {
       connectionState.call(this, 'sharing')
       break
     case 'start':
+      document.querySelector('.whoami').dataset.player = data.player
       connectionState.call(this, 'connected')
       break
   }
