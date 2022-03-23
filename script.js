@@ -79,8 +79,7 @@ function connectionState (state) {
 
 function setClass (add, remove) {
   return function (element) {
-    element.classList.add(add)
-    element.classList.remove(remove)
+    element.classList.replace(remove, add)
     return element
   }
 }
