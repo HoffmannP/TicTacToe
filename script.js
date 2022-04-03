@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', main)
 
 function main () {
-  const DEV = false; process.env.NODE_ENV !== 'production'
+  // const DEV = process.env.NODE_ENV !== 'production'
+  const DEV = false
   const state = {
     connection: 'offline',
     myturn: false,

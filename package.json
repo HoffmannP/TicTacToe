@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "dev": "parcel index.html",
+    "build": "parcel build index.html"
+  },
   "devDependencies": {
     "@parcel/service-worker": "^2.4.1",
     "parcel": "^2.4.1"
