@@ -13,6 +13,9 @@ mkdir build
 	sed 's/DEV = true/DEV = false/;s%/feather-icons%%' script.js
 ) | uglifyjs --mangle --toplevel --compress --source-map --output build/script.js
 sed '/uikit/d;s%/feather-icons%%' index.html | minify --html > build/index.html
+(
+	cat sw.js
+) | uglifyjs --mangle --toplevel --compress --source-map --output build/sw.js
 
 ssh uber -x mkdir -p			html/tictactoe/images
 scp build/*					uber:html/tictactoe/

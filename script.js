@@ -9,7 +9,8 @@ function main () {
     bord: Array(9).fill(''),
     websocket: new window.WebSocket(DEV ? 'ws://localhost:5432' : 'wss://b-ranger.de/tictactoe_ws'),
     key: null,
-    cells: [...document.querySelectorAll('.grid > div')]
+    cells: [...document.querySelectorAll('.grid > div')],
+    reg: null
   }
 
   state.websocket.addEventListener('error', e => { console.debug(e); connectionState.call(this, 'offline') })
@@ -26,6 +27,8 @@ function main () {
   document.querySelector('.grid').addEventListener('click', play.bind(state))
 
   drawBord.call(state)
+  navigator.serviceWorker.register('sw.js')
+  navigator.serviceWorker.ready.then(reg => (state.reg = reg))
 }
 
 function send (action, data = {}) {
@@ -115,8 +118,7 @@ function myturnState (state) {
   switch (state) {
     case true:
       if (document.visibilityState !== 'visible' && this.notify) {
-        // eslint-disable-next-line no-new
-        new window.Notification("It's your turn", { tag: this.key })
+        this.reg.showNotification("It's your turn", { tag: this.key })
       }
       document.querySelectorAll('.state-turn').forEach(setClass('uk-text-primary', 'uk-text-muted'))
       document.querySelectorAll('.state-turn').forEach(setIcon('crosshair'))
