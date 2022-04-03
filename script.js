@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', main)
 
 function main () {
-  const DEV = true
+  const DEV = false; process.env.NODE_ENV !== 'production'
   const state = {
     connection: 'offline',
     myturn: false,
@@ -27,7 +27,10 @@ function main () {
   document.querySelector('.grid').addEventListener('click', play.bind(state))
 
   drawBord.call(state)
-  navigator.serviceWorker.register('sw.js')
+  navigator.serviceWorker.register(
+    new URL('sw.js', import.meta.url),
+    { type: 'module' }
+  )
   navigator.serviceWorker.ready.then(reg => (state.reg = reg))
 }
 

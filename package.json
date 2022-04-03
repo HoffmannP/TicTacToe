@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "@parcel/service-worker": "^2.4.1",
+    "parcel": "^2.4.1"
+  },
+  "license": "GPL-3.0-or-later"
+}
